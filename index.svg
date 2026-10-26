@@ -1,0 +1,1056 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1440 900" width="100%" height="100%">
+  <foreignObject width="1440" height="900">
+    <div xmlns="http://www.w3.org/1999/xhtml">
+      <script src="https://cdn.tailwindcss.com"></script>
+      <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:ital,wght@0,300;0,400;0,500;0,600;0,700;1,400&amp;display=swap" rel="stylesheet"/>
+      <style>
+        * { box-sizing: border-box; font-family: 'Plus Jakarta Sans', sans-serif; }
+        body { margin: 0; padding: 0; background: #050806; color: #e2e8f0; overflow: hidden; user-select: none; }
+        .glass { background: rgba(13, 27, 18, 0.65); backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px); border: 1px solid rgba(34, 197, 94, 0.15); }
+        .glass-panel { background: rgba(8, 18, 12, 0.8); backdrop-filter: blur(24px); border: 1px solid rgba(34, 197, 94, 0.2); }
+        .glow-green { box-shadow: 0 0 30px rgba(34, 197, 94, 0.15); }
+        .custom-scrollbar::-webkit-scrollbar { width: 6px; height: 6px; }
+        .custom-scrollbar::-webkit-scrollbar-track { background: rgba(5, 8, 6, 0.5); }
+        .custom-scrollbar::-webkit-scrollbar-thumb { background: rgba(34, 197, 94, 0.3); border-radius: 3px; }
+        .custom-scrollbar::-webkit-scrollbar-thumb:hover { background: rgba(34, 197, 94, 0.6); }
+        @keyframes pulse-slow { 0%, 100% { opacity: 0.3; transform: scale(1); } 50% { opacity: 0.5; transform: scale(1.05); } }
+        .animate-pulse-slow { animation: pulse-slow 8s infinite ease-in-out; }
+      </style>
+
+      <!-- Main Browser Container -->
+      <div id="browser-app" class="w-screen h-screen flex flex-col relative overflow-hidden bg-gradient-to-br from-[#020503] via-[#07140a] to-[#010302]">
+        
+        <!-- Ambient Background Glows -->
+        <div class="absolute -top-32 -left-32 w-96 h-96 bg-emerald-600/20 rounded-full blur-3xl pointer-events-none animate-pulse-slow"></div>
+        <div class="absolute -bottom-32 -right-32 w-96 h-96 bg-green-500/15 rounded-full blur-3xl pointer-events-none animate-pulse-slow" style="animation-delay: 4s;"></div>
+
+        <!-- Top Header & Chrome-like Tab Bar -->
+        <div id="tab-bar-container" class="flex items-center h-11 px-3 bg-[#030704]/90 border-b border-emerald-900/30 gap-2 shrink-0 z-20">
+          
+          <!-- Traffic / Window Control Dots -->
+          <div class="flex items-center gap-2 mr-2">
+            <div class="w-3 h-3 rounded-full bg-red-500/80 hover:bg-red-500 cursor-pointer transition-all shadow-sm"></div>
+            <div class="w-3 h-3 rounded-full bg-yellow-500/80 hover:bg-yellow-500 cursor-pointer transition-all shadow-sm"></div>
+            <div class="w-3 h-3 rounded-full bg-green-500/80 hover:bg-green-500 cursor-pointer transition-all shadow-sm"></div>
+          </div>
+
+          <!-- Tabs Container -->
+          <div id="tabs-list" class="flex items-center gap-1.5 overflow-x-auto custom-scrollbar flex-1 h-full pt-1.5">
+            <!-- Dynamically populated via JS -->
+          </div>
+
+          <!-- New Tab Button (+) -->
+          <button onclick="addNewTab()" title="new tab" class="p-1.5 rounded-lg hover:bg-emerald-950/50 text-emerald-400/70 hover:text-emerald-300 transition-colors">
+            <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M12 4.5v15m7.5-7.5h-15"></path></svg>
+          </button>
+
+          <!-- Top-Right Bold Gotham "B" Logo with Checkered Lines -->
+          <div class="flex items-center gap-2 px-3 py-1 bg-emerald-950/40 border border-emerald-500/30 rounded-lg ml-2 shadow-inner">
+            <div class="relative w-6 h-6 flex items-center justify-center font-black tracking-tighter text-emerald-300 text-sm bg-emerald-900/60 rounded border border-emerald-400/40 overflow-hidden">
+              <div class="absolute inset-0 opacity-20 bg-[linear-gradient(45deg,#22c55e_25%,transparent_25%,transparent_50%,#22c55e_50%,#22c55e_75%,transparent_75%,transparent)] bg-[length:6px_6px]"></div>
+              <span>b</span>
+            </div>
+            <div class="flex flex-col text-[10px] leading-tight text-emerald-400 font-medium">
+              <span class="tracking-widest font-bold">BLUR</span>
+              <span class="text-[8px] text-emerald-500/70">v0.1.0</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Address & URL Bar -->
+        <div class="flex items-center h-12 px-4 bg-[#040a06]/80 border-b border-emerald-900/30 gap-3 shrink-0 z-20">
+          <!-- Navigation Buttons -->
+          <div class="flex items-center gap-1">
+            <button onclick="goBack()" class="p-2 rounded-lg hover:bg-emerald-950/50 text-emerald-400/60 hover:text-emerald-300 transition-colors" title="back">
+              <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M15.75 19.5L8.25 12l7.5-7.5"></path></svg>
+            </button>
+            <button onclick="goForward()" class="p-2 rounded-lg hover:bg-emerald-950/50 text-emerald-400/60 hover:text-emerald-300 transition-colors" title="forward">
+              <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M8.25 4.5l7.5 7.5-7.5 7.5"></path></svg>
+            </button>
+            <button onclick="reloadPage()" class="p-2 rounded-lg hover:bg-emerald-950/50 text-emerald-400/60 hover:text-emerald-300 transition-colors" title="reload">
+              <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M16.023 9.348h4.992v-.001M2.985 19.644v-4.992m0 0h4.992m-4.993 0l3.181 3.183a8.25 8.25 0 0013.803-3.7M4.031 9.865a8.25 8.25 0 0113.803-3.7l3.181 3.182m0-4.991v4.99"></path></svg>
+            </button>
+          </div>
+
+          <!-- URL Input Box -->
+          <div class="flex-1 flex items-center bg-[#020503] border border-emerald-900/40 rounded-xl px-3 py-1.5 focus-within:border-emerald-500/60 transition-all shadow-inner group">
+            <span class="text-emerald-500/60 mr-2 text-xs font-mono">🔒</span>
+            <input id="url-input" type="text" onkeydown="handleUrlKeydown(event)" class="w-full bg-transparent text-emerald-200 text-sm focus:outline-none placeholder-emerald-800/60 font-mono" placeholder="blur://newtab or search the web..."/>
+            <button onclick="navigateFromBar()" class="text-xs px-2.5 py-1 bg-emerald-950/80 hover:bg-emerald-900 border border-emerald-700/40 text-emerald-300 rounded-lg transition-colors font-medium">go</button>
+          </div>
+
+          <!-- Repo Badge -->
+          <div class="hidden md:flex items-center gap-1.5 px-3 py-1 bg-emerald-950/30 border border-emerald-900/40 rounded-lg text-xs text-emerald-400/70 font-mono">
+            <span class="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse"></span>
+            <span>nest-proxy/blur-learning</span>
+          </div>
+        </div>
+
+        <!-- Main Workspace: Sidebar + Viewport -->
+        <div class="flex flex-1 overflow-hidden relative">
+          
+          <!-- Bottom-Left Vertical Sidebar -->
+          <div class="w-16 bg-[#030704]/90 border-r border-emerald-900/30 flex flex-col items-center py-4 justify-between shrink-0 z-20">
+            <div class="flex flex-col items-center gap-3">
+              <!-- Games App -->
+              <button onclick="navigateTo('blur://games')" id="sidebar-blur://games" class="sidebar-btn p-3 rounded-xl text-emerald-400/60 hover:text-emerald-300 hover:bg-emerald-950/50 transition-all group relative" title="games">
+                <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M14 10h2m-2 3h2m-5-3h.01M9 13h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"></path></svg>
+                <span class="absolute left-16 bg-[#07140a] text-emerald-300 text-xs px-2 py-1 rounded shadow-lg opacity-0 group-hover:opacity-100 transition-opacity whitespace-nowrap pointer-events-none border border-emerald-800/40 z-50">games</span>
+              </button>
+
+              <!-- AI Assistant App -->
+              <button onclick="navigateTo('blur://ai')" id="sidebar-blur://ai" class="sidebar-btn p-3 rounded-xl text-emerald-400/60 hover:text-emerald-300 hover:bg-emerald-950/50 transition-all group relative" title="ai assistant">
+                <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M9.813 15.904L9 18.75l-.813-2.846a4.5 4.5 0 00-3.09-3.09L2.25 12l2.846-.813a4.5 4.5 0 003.09-3.09L9 5.25l.813 2.846a4.5 4.5 0 003.09 3.09L15.75 12l-2.846.813a4.5 4.5 0 00-3.09 3.09zM18.259 8.715L18 9.75l-.259-1.035a3.375 3.375 0 00-2.455-2.456L14.25 6l1.036-.259a3.375 3.375 0 002.455-2.456L18 2.25l.259 1.035a3.375 3.375 0 002.456 2.456L21.75 6l-1.035.259a3.375 3.375 0 00-2.456 2.456zM16.894 20.567L16.5 21.75l-.394-1.183a2.25 2.25 0 00-1.423-1.423L13.5 18.75l1.183-.394a2.25 2.25 0 001.423-1.423l.394-1.183.394 1.183a2.25 2.25 0 001.423 1.423l1.183.394-1.183.394a2.25 2.25 0 00-1.423 1.423z"></path></svg>
+                <span class="absolute left-16 bg-[#07140a] text-emerald-300 text-xs px-2 py-1 rounded shadow-lg opacity-0 group-hover:opacity-100 transition-opacity whitespace-nowrap pointer-events-none border border-emerald-800/40 z-50">ai assistant</span>
+              </button>
+
+              <!-- Music Player App -->
+              <button onclick="navigateTo('blur://music')" id="sidebar-blur://music" class="sidebar-btn p-3 rounded-xl text-emerald-400/60 hover:text-emerald-300 hover:bg-emerald-950/50 transition-all group relative" title="music player">
+                <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M9 9l10.5-3m0 6.553v3.75a2.25 2.25 0 01-1.632 2.163l-1.32.377a1.803 1.803 0 11-.99-3.467l2.31-.66a2.25 2.25 0 001.632-2.163zm0 0V2.25L9 5.25v10.303m0 0v3.75a2.25 2.25 0 01-1.632 2.163l-1.32.377a1.803 1.803 0 01-.99-3.467l2.31-.66A2.25 2.25 0 009 15.553z"></path></svg>
+                <span class="absolute left-16 bg-[#07140a] text-emerald-300 text-xs px-2 py-1 rounded shadow-lg opacity-0 group-hover:opacity-100 transition-opacity whitespace-nowrap pointer-events-none border border-emerald-800/40 z-50">music player</span>
+              </button>
+
+              <!-- Chat App -->
+              <button onclick="navigateTo('blur://chat')" id="sidebar-blur://chat" class="sidebar-btn p-3 rounded-xl text-emerald-400/60 hover:text-emerald-300 hover:bg-emerald-950/50 transition-all group relative" title="chat with friends">
+                <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M7.5 8.25h9m-9 3H12m-9.75 1.51c0 1.6 1.123 2.994 2.707 3.227 1.129.166 2.27.293 3.423.379.35.026.67.21.865.501L12 21l2.755-4.133a1.14 1.14 0 01.865-.501 48.172 48.172 0 003.423-.379c1.584-.233 2.707-1.626 2.707-3.228V6.741c0-1.602-1.123-2.995-2.707-3.228A48.394 48.394 0 0012 3c-2.392 0-4.744.175-7.043.513C3.373 3.746 2.25 5.14 2.25 6.741v6.018z"></path></svg>
+                <span class="absolute left-16 bg-[#07140a] text-emerald-300 text-xs px-2 py-1 rounded shadow-lg opacity-0 group-hover:opacity-100 transition-opacity whitespace-nowrap pointer-events-none border border-emerald-800/40 z-50">chat with friends</span>
+              </button>
+            </div>
+
+            <div class="flex flex-col items-center gap-3">
+              <!-- New Tab Hub shortcut -->
+              <button onclick="navigateTo('blur://newtab')" class="p-3 rounded-xl text-emerald-400/60 hover:text-emerald-300 hover:bg-emerald-950/50 transition-all group relative" title="new tab hub">
+                <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M2.25 12l8.954-8.955c.44-.439 1.152-.439 1.591 0L21.75 12M4.5 9.75v10.125c0 .621.504 1.125 1.125 1.125H9.75v-4.875c0-.621.504-1.125 1.125-1.125h2.25c.621 0 1.125.504 1.125 1.125V21h4.125c.621 0 1.125-.504 1.125-1.125V9.75M8.25 21h8.25"></path></svg>
+                <span class="absolute left-16 bg-[#07140a] text-emerald-300 text-xs px-2 py-1 rounded shadow-lg opacity-0 group-hover:opacity-100 transition-opacity whitespace-nowrap pointer-events-none border border-emerald-800/40 z-50">hub</span>
+              </button>
+
+              <!-- Settings App -->
+              <button onclick="navigateTo('blur://settings')" id="sidebar-blur://settings" class="sidebar-btn p-3 rounded-xl text-emerald-400/60 hover:text-emerald-300 hover:bg-emerald-950/50 transition-all group relative" title="settings">
+                <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M9.594 3.94c.09-.542.56-.94 1.11-.94h2.593c.55 0 1.02.398 1.11.94l.213 1.281c.063.374.313.686.645.87.074.04.147.083.22.127.324.196.72.257 1.075.124l1.217-.456a1.125 1.125 0 011.37.49l1.296 2.247a1.125 1.125 0 01-.26 1.431l-1.003.827c-.293.24-.438.613-.431.992a6.759 6.759 0 010 .555c-.007.378.138.75.43.99l1.005.828c.424.35.534.954.26 1.43l-1.298 2.247a1.125 1.125 0 01-1.369.491l-1.217-.456c-.355-.133-.75-.072-1.076.124a6.57 6.57 0 01-.22.128c-.331.183-.581.495-.644.869l-.213 1.28c-.09.543-.56.94-1.11.94h-2.594c-.55 0-1.019-.398-1.11-.94l-.213-1.281c-.062-.374-.312-.686-.644-.87a6.52 6.52 0 01-.22-.127c-.325-.196-.72-.257-1.076-.124l-1.217.456a1.125 1.125 0 01-1.369-.49l-1.297-2.247a1.125 1.125 0 01.26-1.431l1.004-.827c.292-.24.437-.613.43-.992a6.932 6.932 0 010-.555c.007-.378-.138-.75-.43-.99l-1.004-.828a1.125 1.125 0 01-.26-1.43l1.297-2.247a1.125 1.125 0 011.37-.491l1.216.456c.356.133.751.072 1.076-.124.072-.044.146-.087.22-.128.332-.183.582-.495.644-.869l{.214-1.281z"></path><path stroke-linecap="round" stroke-linejoin="round" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path></svg>
+                <span class="absolute left-16 bg-[#07140a] text-emerald-300 text-xs px-2 py-1 rounded shadow-lg opacity-0 group-hover:opacity-100 transition-opacity whitespace-nowrap pointer-events-none border border-emerald-800/40 z-50">settings</span>
+              </button>
+
+              <div class="text-[10px] text-emerald-600 font-mono tracking-tighter text-center">more apps soon</div>
+            </div>
+          </div>
+
+          <!-- Main Content Viewport -->
+          <div id="viewport-container" class="flex-1 relative overflow-hidden bg-[#050806]">
+            
+            <!-- VIEW 1: blur://newtab (Hub View) -->
+            <div id="view-blur://newtab" class="app-view absolute inset-0 flex flex-col items-center justify-center p-6 overflow-y-auto custom-scrollbar">
+              <!-- Bold Gotham "BLUR" Title fading into background at 70% opacity -->
+              <div class="absolute inset-0 flex items-center justify-center pointer-events-none select-none overflow-hidden">
+                <h1 class="text-[18vw] font-black tracking-tighter text-emerald-950/30 uppercase font-sans">blur</h1>
+              </div>
+
+              <!-- Content Container -->
+              <div class="relative z-10 flex flex-col items-center max-w-2xl w-full gap-6">
+                <!-- Randomly Selected Quote -->
+                <div class="px-5 py-2.5 rounded-2xl glass border border-emerald-500/20 text-emerald-300/90 text-sm font-medium shadow-lg backdrop-blur-md text-center max-w-lg transition-all animate-fade-in">
+                  <span id="quote-display" class="italic">"loading quote..."</span>
+                </div>
+
+                <!-- Search Bar -->
+                <div class="w-full flex items-center bg-[#07140a]/90 border border-emerald-500/30 rounded-2xl px-5 py-3.5 shadow-2xl glow-green focus-within:border-emerald-400 transition-all">
+                  <svg class="w-5 h-5 text-emerald-400 mr-3 shrink-0" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M21 21l-5.197-5.197m0 0A7.5 7.5 0 105.196 5.196a7.5 7.5 0 0010.607 10.607z"></path></svg>
+                  <input type="text" onkeydown="handleHubSearch(event)" placeholder="search the web or type a blur:// scheme..." class="w-full bg-transparent text-emerald-100 placeholder-emerald-700/60 text-base focus:outline-none font-medium"/>
+                  <span class="text-xs text-emerald-500/60 font-mono hidden sm:inline">press enter</span>
+                </div>
+
+                <!-- Bookmark Placeholders -->
+                <div class="grid grid-cols-2 sm:grid-cols-4 gap-4 w-full pt-4">
+                  <!-- Google Bookmark -->
+                  <div onclick="navigateTo('https://www.google.com')" class="glass hover:bg-emerald-950/40 p-4 rounded-2xl flex flex-col items-center gap-2 cursor-pointer border border-emerald-900/40 hover:border-emerald-500/40 transition-all group shadow-md">
+                    <div class="w-10 h-10 rounded-xl bg-emerald-900/40 flex items-center justify-center text-emerald-300 group-hover:scale-110 transition-transform">
+                      <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M12 21a9.004 9.004 0 008.716-6.747M12 21a9.004 9.004 0 01-8.716-6.747M12 21c2.485 0 4.5-4.03 4.5-9S14.485 3 12 3m0 18c-2.485 0-4.5-4.03-4.5-9S9.515 3 12 3m0 0a8.997 8.997 0 017.843 4.582M12 3a8.997 8.997 0 00-7.843 4.582m15.686 0A11.953 11.953 0 0112 10.5c-2.998 0-5.74-1.1-7.843-2.918m15.686 0A8.959 8.959 0 0121 12c0 .778-.099 1.533-.284 2.25m0 0A11.959 11.959 0 0112 16.5c-3.162 0-6.033-1.2-8.156-3.15M20.716 14.25A8.96 8.96 0 0112 16.5a8.96 8.96 0 01-8.716-2.25"></path></svg>
+                    </div>
+                    <span class="text-xs font-medium text-emerald-300">google</span>
+                  </div>
+
+                  <!-- Weather Bookmark -->
+                  <div onclick="navigateTo('blur://weather')" class="glass hover:bg-emerald-950/40 p-4 rounded-2xl flex flex-col items-center gap-2 cursor-pointer border border-emerald-900/40 hover:border-emerald-500/40 transition-all group shadow-md">
+                    <div class="w-10 h-10 rounded-xl bg-emerald-900/40 flex items-center justify-center text-emerald-300 group-hover:scale-110 transition-transform">
+                      <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M2.25 15a4.5 4.5 0 004.5 4.5H18a3.75 3.75 0 001.332-7.257 3 3 0 00-3.758-3.848 5.25 5.25 0 00-10.233 2.33A4.502 4.502 0 002.25 15z"></path></svg>
+                    </div>
+                    <span class="text-xs font-medium text-emerald-300">weather</span>
+                  </div>
+
+                  <!-- Notes Bookmark -->
+                  <div onclick="navigateTo('blur://notes')" class="glass hover:bg-emerald-950/40 p-4 rounded-2xl flex flex-col items-center gap-2 cursor-pointer border border-emerald-900/40 hover:border-emerald-500/40 transition-all group shadow-md">
+                    <div class="w-10 h-10 rounded-xl bg-emerald-900/40 flex items-center justify-center text-emerald-300 group-hover:scale-110 transition-transform">
+                      <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M16.862 4.487l1.687-1.688a1.875 1.875 0 112.652 2.652L6.832 19.82a4.5 4.5 0 01-1.897 1.13l-2.685.8.8-2.685a4.5 4.5 0 011.13-1.897L16.863 4.487zm0 0L19.5 7.125"></path></svg>
+                    </div>
+                    <span class="text-xs font-medium text-emerald-300">notes</span>
+                  </div>
+
+                  <!-- Custom Attachable Link / App -->
+                  <div onclick="openCustomLinkModal()" class="glass hover:bg-emerald-950/40 p-4 rounded-2xl flex flex-col items-center gap-2 cursor-pointer border border-emerald-900/40 hover:border-emerald-500/40 transition-all group shadow-md border-dashed">
+                    <div class="w-10 h-10 rounded-xl bg-emerald-900/40 flex items-center justify-center text-emerald-300 group-hover:scale-110 transition-transform">
+                      <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M12 4.5v15m7.5-7.5h-15"></path></svg>
+                    </div>
+                    <span class="text-xs font-medium text-emerald-300">attach link</span>
+                  </div>
+                </div>
+
+                <!-- Custom App Quick Launch Grid -->
+                <div id="custom-links-container" class="flex flex-wrap gap-2 w-full justify-center"></div>
+              </div>
+            </div>
+
+            <!-- VIEW 2: blur://games -->
+            <div id="view-blur://games" class="app-view absolute inset-0 hidden flex-col p-6 overflow-y-auto custom-scrollbar">
+              <div class="max-w-5xl mx-auto w-full flex flex-col gap-6">
+                <div class="flex items-center justify-between pb-4 border-b border-emerald-900/30">
+                  <div>
+                    <h2 class="text-2xl font-bold text-emerald-200 tracking-tight">games hub</h2>
+                    <p class="text-xs text-emerald-400/70 font-mono">play retro arcade and physics browser games</p>
+                  </div>
+                  <div class="flex gap-2">
+                    <button onclick="loadGame('snake')" class="px-3 py-1.5 rounded-lg bg-emerald-950/60 border border-emerald-700/40 text-xs text-emerald-300 hover:bg-emerald-900 transition-colors font-medium">snake</button>
+                    <button onclick="loadGame('pong')" class="px-3 py-1.5 rounded-lg bg-emerald-950/60 border border-emerald-700/40 text-xs text-emerald-300 hover:bg-emerald-900 transition-colors font-medium">pong</button>
+                    <button onclick="loadGame('clicker')" class="px-3 py-1.5 rounded-lg bg-emerald-950/60 border border-emerald-700/40 text-xs text-emerald-300 hover:bg-emerald-900 transition-colors font-medium">clicker</button>
+                  </div>
+                </div>
+                <!-- Game Canvas Container -->
+                <div class="flex-1 flex items-center justify-center min-h-[450px] glass rounded-2xl border border-emerald-900/40 relative overflow-hidden p-4">
+                  <div id="game-container" class="w-full h-full flex items-center justify-center">
+                    <div class="text-center flex flex-col items-center gap-3">
+                      <div class="text-emerald-400 text-lg font-bold">select a game above to start playing</div>
+                      <p class="text-xs text-emerald-500/70">fully interactive canvas games built right into blur</p>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- VIEW 3: blur://ai (AI Assistant App) -->
+            <div id="view-blur://ai" class="app-view absolute inset-0 hidden flex-col p-6 overflow-y-auto custom-scrollbar">
+              <div class="max-w-4xl mx-auto w-full h-full flex flex-col glass rounded-2xl border border-emerald-900/40 shadow-2xl overflow-hidden">
+                <!-- AI Header -->
+                <div class="flex items-center justify-between px-6 py-4 bg-[#07140a]/80 border-b border-emerald-900/30">
+                  <div class="flex items-center gap-3">
+                    <div class="w-8 h-8 rounded-lg bg-emerald-900/60 flex items-center justify-center text-emerald-300 font-bold border border-emerald-500/30">AI</div>
+                    <div>
+                      <h3 class="text-sm font-bold text-emerald-200">blur intelligence</h3>
+                      <p class="text-[10px] text-emerald-400/60 font-mono">powered by neural proxy v0.1</p>
+                    </div>
+                  </div>
+                  <button onclick="clearAiChat()" class="text-xs text-emerald-400/70 hover:text-emerald-300 px-3 py-1 rounded-lg bg-emerald-950/40 border border-emerald-800/30">clear chat</button>
+                </div>
+
+                <!-- Chat Message Area -->
+                <div id="ai-chat-messages" class="flex-1 p-6 overflow-y-auto custom-scrollbar flex flex-col gap-4">
+                  <div class="flex gap-3 max-w-[80%]">
+                    <div class="w-8 h-8 rounded-full bg-emerald-900/60 flex items-center justify-center text-emerald-300 text-xs shrink-0 font-bold">AI</div>
+                    <div class="px-4 py-3 rounded-2xl glass border border-emerald-900/40 text-emerald-200 text-sm">
+                      hello! i am your blur ai assistant. how can I help you today? you can also attach photos for visual analysis.
+                    </div>
+                  </div>
+                </div>
+
+                <!-- Attached Preview Bar -->
+                <div id="ai-attachment-preview" class="hidden px-6 py-2 bg-emerald-950/30 border-t border-emerald-900/30 flex items-center gap-3">
+                  <img id="ai-thumb" class="w-12 h-12 rounded object-cover border border-emerald-500/40"/>
+                  <span id="ai-filename" class="text-xs text-emerald-300 font-mono truncate"></span>
+                  <button onclick="removeAiAttachment()" class="ml-auto text-xs text-red-400 hover:text-red-300">remove</button>
+                </div>
+
+                <!-- Chat Input Bar -->
+                <div class="p-4 bg-[#07140a]/80 border-t border-emerald-900/30 flex items-center gap-3">
+                  <!-- Photo attachment input -->
+                  <label class="p-2.5 rounded-xl bg-emerald-950/60 border border-emerald-700/40 text-emerald-300 hover:bg-emerald-900 cursor-pointer transition-colors" title="attach photo">
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M2.25 15.75l5.159-5.159a2.25 2.25 0 013.182 0l5.159 5.159m-1.5-1.5l1.409-1.409a2.25 2.25 0 013.182 0l2.909 2.909m-18 3.75h16.5a1.5 1.5 0 001.5-1.5V6a1.5 1.5 0 00-1.5-1.5H3.75A1.5 1.5 0 002.25 6v12a1.5 1.5 0 001.5 1.5zm10.5-11.25h.008v.008h-.008V8.25zm.375 0a.375.375 0 11-.75 0 .375.375 0 01.75 0z"></path></svg>
+                    <input type="file" accept="image/*" onchange="handleAiPhotoUpload(event)" class="hidden"/>
+                  </label>
+
+                  <input id="ai-input" type="text" onkeydown="handleAiKeydown(event)" placeholder="ask ai anything or upload an image..." class="flex-1 bg-[#020503] border border-emerald-900/40 rounded-xl px-4 py-2.5 text-sm text-emerald-100 focus:outline-none focus:border-emerald-500 font-medium"/>
+                  
+                  <button onclick="sendAiMessage()" class="px-5 py-2.5 bg-emerald-600 hover:bg-emerald-500 text-black font-bold rounded-xl transition-colors text-sm shadow-md">send</button>
+                </div>
+              </div>
+            </div>
+
+            <!-- VIEW 4: blur://music (Music Player App) -->
+            <div id="view-blur://music" class="app-view absolute inset-0 hidden flex-col p-6 overflow-y-auto custom-scrollbar">
+              <div class="max-w-4xl mx-auto w-full flex flex-col gap-6">
+                <!-- Header -->
+                <div class="flex items-center justify-between pb-4 border-b border-emerald-900/30">
+                  <div>
+                    <h2 class="text-2xl font-bold text-emerald-200 tracking-tight">music player</h2>
+                    <p class="text-xs text-emerald-400/70 font-mono">upload mp3, ogg, flac, wav or stream library</p>
+                  </div>
+                  <!-- Local File Upload Button -->
+                  <label class="px-4 py-2 bg-emerald-600 hover:bg-emerald-500 text-black font-bold rounded-xl cursor-pointer text-xs transition-colors shadow-md flex items-center gap-2">
+                    <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M3 16.5v2.25A2.25 2.25 0 005.25 21h13.5A2.25 2.25 0 0021 18.75V16.5m-13.5-9L12 3m0 0l4.5 4.5M12 3v13.5"></path></svg>
+                    <span>upload local songs</span>
+                    <input type="file" id="music-file-input" multiple accept=".mp3,.ogg,.flac,.wav" onchange="handleMusicUpload(event)" class="hidden"/>
+                  </label>
+                </div>
+
+                <!-- Main Player Card -->
+                <div class="glass p-8 rounded-3xl border border-emerald-900/40 flex flex-col md:flex-row items-center gap-8 shadow-2xl relative overflow-hidden">
+                  <!-- Vinyl Album Art Animation -->
+                  <div class="relative w-48 h-48 rounded-full bg-[#030704] border-4 border-emerald-800/40 flex items-center justify-center shadow-2xl shrink-0">
+                    <div id="vinyl-disc" class="absolute inset-2 rounded-full border border-emerald-900/60 bg-[radial-gradient(circle,#050806_20%,#0c1f14_40%,#020503_80%)] flex items-center justify-center">
+                      <div class="w-12 h-12 rounded-full bg-emerald-600/40 border border-emerald-400/60 flex items-center justify-center">
+                        <div class="w-3 h-3 rounded-full bg-[#020503]"></div>
+                      </div>
+                    </div>
+                  </div>
+
+                  <!-- Track Details & Controls -->
+                  <div class="flex-1 flex flex-col gap-4 w-full text-center md:text-left">
+                    <div>
+                      <div id="current-track-title" class="text-xl font-bold text-emerald-200 truncate">no song selected</div>
+                      <div id="current-track-artist" class="text-xs text-emerald-400/70 font-mono mt-1">upload or pick a track from library</div>
+                    </div>
+
+                    <!-- Progress Bar -->
+                    <div class="flex flex-col gap-1.5">
+                      <input id="track-progress" type="range" min="0" max="100" value="0" oninput="seekAudio(event)" class="w-full accent-emerald-500 cursor-pointer h-1.5 bg-emerald-950 rounded-lg"/>
+                      <div class="flex justify-between text-[10px] text-emerald-500 font-mono">
+                        <span id="current-time">0:00</span>
+                        <span id="total-duration">0:00</span>
+                      </div>
+                    </div>
+
+                    <!-- Control Buttons -->
+                    <div class="flex items-center justify-center md:justify-start gap-4">
+                      <button onclick="prevTrack()" class="p-3 rounded-xl bg-emerald-950/60 text-emerald-300 hover:bg-emerald-900 transition-colors border border-emerald-800/30">
+                        <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M21 16.811V7.189a1.25 1.25 0 00-1.859-1.092l-8.528 4.811a1.25 1.25 0 000 2.184l8.528 4.811A1.25 1.25 0 0021 16.811zM6.75 6.75v10.5M3 6.75v10.5"></path></svg>
+                      </button>
+                      <button onclick="togglePlayPause()" id="play-pause-btn" class="p-4 rounded-2xl bg-emerald-600 hover:bg-emerald-500 text-black transition-colors shadow-lg font-bold">
+                        <svg class="w-6 h-6" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M5.25 5.653c0-.856.917-1.398 1.667-.986l11.54 6.347a1.125 1.125 0 010 1.972l-11.54 6.347a1.125 1.125 0 01-1.667-.986V5.653z"></path></svg>
+                      </button>
+                      <button onclick="nextTrack()" class="p-3 rounded-xl bg-emerald-950/60 text-emerald-300 hover:bg-emerald-900 transition-colors border border-emerald-800/30">
+                        <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M3 16.811V7.189a1.25 1.25 0 001.859-1.092l8.528 4.811a1.25 1.25 0 000 2.184l-8.528 4.811A1.25 1.25 0 003 16.811zM17.25 6.75v10.5M21 6.75v10.5"></path></svg>
+                      </button>
+                    </div>
+                  </div>
+                </div>
+
+                <!-- Playlist Library -->
+                <div class="glass p-6 rounded-2xl border border-emerald-900/40 flex flex-col gap-3">
+                  <h3 class="text-sm font-bold text-emerald-300">playlist library &amp; youtube integration</h3>
+                  <div id="playlist-container" class="flex flex-col gap-2 max-h-60 overflow-y-auto custom-scrollbar pr-2">
+                    <!-- Populated via JS -->
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- VIEW 5: blur://chat (Chat with Friends App) -->
+            <div id="view-blur://chat" class="app-view absolute inset-0 hidden flex-col p-6 overflow-y-auto custom-scrollbar">
+              <div class="max-w-4xl mx-auto w-full h-full flex glass rounded-2xl border border-emerald-900/40 shadow-2xl overflow-hidden">
+                <!-- Friends Sidebar -->
+                <div class="w-64 bg-[#030704]/80 border-r border-emerald-900/30 flex flex-col p-4 gap-4">
+                  <h3 class="text-sm font-bold text-emerald-300">friends</h3>
+                  <div id="friends-list" class="flex flex-col gap-1.5 overflow-y-auto custom-scrollbar">
+                    <!-- Populated via JS -->
+                  </div>
+                </div>
+                <!-- Chat Window -->
+                <div class="flex-1 flex flex-col">
+                  <div class="px-6 py-4 bg-[#07140a]/80 border-b border-emerald-900/30 flex items-center justify-between">
+                    <span id="active-chat-name" class="text-sm font-bold text-emerald-200">select a friend</span>
+                    <span class="w-2.5 h-2.5 rounded-full bg-emerald-500 animate-pulse"></span>
+                  </div>
+                  <div id="friend-messages" class="flex-1 p-6 overflow-y-auto custom-scrollbar flex flex-col gap-3">
+                    <div class="text-center text-xs text-emerald-500/70 my-auto">choose a conversation on the left</div>
+                  </div>
+                  <div class="p-4 bg-[#07140a]/80 border-t border-emerald-900/30 flex gap-3">
+                    <input id="chat-input" type="text" onkeydown="handleChatKeydown(event)" placeholder="type a message..." class="flex-1 bg-[#020503] border border-emerald-900/40 rounded-xl px-4 py-2.5 text-sm text-emerald-100 focus:outline-none focus:border-emerald-500 font-medium"/>
+                    <button onclick="sendChatMessage()" class="px-5 py-2.5 bg-emerald-600 hover:bg-emerald-500 text-black font-bold rounded-xl transition-colors text-sm shadow-md">send</button>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- VIEW 6: blur://settings -->
+            <div id="view-blur://settings" class="app-view absolute inset-0 hidden flex-col p-6 overflow-y-auto custom-scrollbar">
+              <div class="max-w-3xl mx-auto w-full flex flex-col gap-6">
+                <div class="pb-4 border-b border-emerald-900/30">
+                  <h2 class="text-2xl font-bold text-emerald-200 tracking-tight">settings</h2>
+                  <p class="text-xs text-emerald-400/70 font-mono">configure themes, proxy routing, and account</p>
+                </div>
+
+                <div class="glass p-6 rounded-2xl border border-emerald-900/40 flex flex-col gap-6">
+                  <!-- Theme settings -->
+                  <div class="flex flex-col gap-2">
+                    <h3 class="text-sm font-bold text-emerald-300">theme &amp; aesthetics</h3>
+                    <div class="grid grid-cols-3 gap-3">
+                      <button onclick="setTheme('emerald')" class="p-4 rounded-xl glass border border-emerald-500/60 text-emerald-300 text-xs font-bold bg-emerald-950/40">emerald dark</button>
+                      <button onclick="setTheme('midnight')" class="p-4 rounded-xl glass border border-emerald-900/40 text-emerald-400/70 text-xs font-bold hover:border-emerald-500/40">midnight void</button>
+                      <button onclick="setTheme('cyberpunk')" class="p-4 rounded-xl glass border border-emerald-900/40 text-emerald-400/70 text-xs font-bold hover:border-emerald-500/40">matrix green</button>
+                    </div>
+                  </div>
+
+                  <!-- Proxy settings -->
+                  <div class="flex flex-col gap-2">
+                    <h3 class="text-sm font-bold text-emerald-300">nest-proxy node</h3>
+                    <div class="flex items-center justify-between p-4 rounded-xl bg-[#030704] border border-emerald-900/40">
+                      <div>
+                        <div class="text-xs font-bold text-emerald-200">proxy bypass engine</div>
+                        <div class="text-[10px] text-emerald-500/70 font-mono">repository blur-learning / user nest-proxy</div>
+                      </div>
+                      <span class="px-3 py-1 rounded-full bg-emerald-950 text-emerald-400 text-xs font-mono border border-emerald-700/40">active v0.1.0</span>
+                    </div>
+                  </div>
+
+                  <!-- Account settings -->
+                  <div class="flex flex-col gap-2">
+                    <h3 class="text-sm font-bold text-emerald-300">account profile</h3>
+                    <div class="flex items-center gap-4 p-4 rounded-xl bg-[#030704] border border-emerald-900/40">
+                      <div class="w-12 h-12 rounded-full bg-emerald-900/60 flex items-center justify-center text-emerald-300 font-bold border border-emerald-500/30">np</div>
+                      <div>
+                        <div class="text-sm font-bold text-emerald-200">nest-proxy user</div>
+                        <div class="text-xs text-emerald-400/60 font-mono">blur-learning@proxy.local</div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- VIEW 7: Web Proxy / External View -->
+            <div id="view-external" class="app-view absolute inset-0 hidden flex-col">
+              <div class="h-10 bg-[#030704] px-4 flex items-center justify-between border-b border-emerald-900/30 text-xs text-emerald-400/70 font-mono">
+                <span id="external-url-label">external web proxy</span>
+                <span class="text-emerald-500">proxied via nest-proxy</span>
+              </div>
+              <iframe id="external-iframe" class="w-full flex-1 border-0 bg-white" sandbox="allow-scripts allow-same-origin allow-forms"></iframe>
+            </div>
+
+            <!-- VIEW 8: blur://weather -->
+            <div id="view-blur://weather" class="app-view absolute inset-0 hidden flex-col p-6 overflow-y-auto custom-scrollbar">
+              <div class="max-w-2xl mx-auto w-full glass p-8 rounded-3xl border border-emerald-900/40 flex flex-col gap-6 shadow-2xl my-auto">
+                <div class="flex items-center justify-between border-b border-emerald-900/30 pb-4">
+                  <h2 class="text-2xl font-bold text-emerald-200">weather station</h2>
+                  <span class="text-xs font-mono text-emerald-400/70">leawood, ks</span>
+                </div>
+                <div class="flex items-center justify-between">
+                  <div>
+                    <div class="text-6xl font-black text-emerald-200">72°F</div>
+                    <div class="text-sm text-emerald-400 font-medium mt-1">scattered green clouds &amp; clear breeze</div>
+                  </div>
+                  <div class="w-20 h-20 rounded-2xl bg-emerald-950/60 border border-emerald-700/40 flex items-center justify-center text-emerald-300">
+                    <svg class="w-10 h-10" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M2.25 15a4.5 4.5 0 004.5 4.5H18a3.75 3.75 0 001.332-7.257 3 3 0 00-3.758-3.848 5.25 5.25 0 00-10.233 2.33A4.502 4.502 0 002.25 15z"></path></svg>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- VIEW 9: blur://notes -->
+            <div id="view-blur://notes" class="app-view absolute inset-0 hidden flex-col p-6 overflow-y-auto custom-scrollbar">
+              <div class="max-w-3xl mx-auto w-full h-full flex flex-col glass rounded-2xl border border-emerald-900/40 shadow-2xl p-6 gap-4">
+                <div class="flex items-center justify-between pb-4 border-b border-emerald-900/30">
+                  <h2 class="text-xl font-bold text-emerald-200">blur scratchpad</h2>
+                  <span class="text-xs text-emerald-500/70 font-mono">auto-saved locally</span>
+                </div>
+                <textarea id="notes-textarea" class="w-full flex-1 bg-[#020503] border border-emerald-900/40 rounded-xl p-4 text-emerald-100 font-mono text-sm focus:outline-none focus:border-emerald-500 resize-none" placeholder="type your secure notes here..."></textarea>
+              </div>
+            </div>
+
+          </div>
+        </div>
+
+      </div>
+
+      <!-- Custom Link Modal -->
+      <div id="custom-link-modal" class="fixed inset-0 bg-black/70 backdrop-blur-sm hidden items-center justify-center z-50 p-4">
+        <div class="glass p-6 rounded-3xl border border-emerald-500/40 max-w-md w-full flex flex-col gap-4 shadow-2xl">
+          <h3 class="text-lg font-bold text-emerald-200">attach custom link / app</h3>
+          <div class="flex flex-col gap-3">
+            <input id="modal-app-name" type="text" placeholder="app name (e.g. github)" class="bg-[#020503] border border-emerald-900/40 rounded-xl px-4 py-2.5 text-sm text-emerald-100 focus:outline-none focus:border-emerald-500"/>
+            <input id="modal-app-url" type="text" placeholder="url or scheme (e.g. https://github.com)" class="bg-[#020503] border border-emerald-900/40 rounded-xl px-4 py-2.5 text-sm text-emerald-100 focus:outline-none focus:border-emerald-500"/>
+          </div>
+          <div class="flex justify-end gap-3 mt-2">
+            <button onclick="closeCustomLinkModal()" class="px-4 py-2 rounded-xl bg-emerald-950/60 text-emerald-400/80 text-xs font-bold">cancel</button>
+            <button onclick="saveCustomLink()" class="px-5 py-2 rounded-xl bg-emerald-600 text-black text-xs font-bold shadow-md">attach</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- JavaScript Application Logic -->
+      <script>
+        // Quotes array
+        const quotes = [
+          "hi",
+          "'evil s3curiy! you will not prevail!' -saige",
+          "i got stuck in the circus...",
+          "smints are like gold.",
+          "welcome to blur v0.1.0, high-performance browsing.",
+          "keep your code clean and your tabs organized."
+        ];
+
+        // Tabs State
+        let tabs = [
+          { id: 1, title: "new tab", url: "blur://newtab" }
+        ];
+        let activeTabId = 1;
+        let historyStack = { 1: ["blur://newtab"] };
+        let historyIndex = { 1: 0 };
+
+        // Custom Links State
+        let customLinks = JSON.parse(localStorage.getItem('blur_custom_links') || '[]');
+
+        // Music Player State
+        let playlist = [
+          { title: "blur ambient signal", artist: "nest-proxy", src: "" },
+          { title: "cyberpunk chill", artist: "synth-lab", src: "" }
+        ];
+        let currentTrackIndex = 0;
+        let audioElem = new Audio();
+        let isPlaying = false;
+
+        // Chat State
+        let friends = [
+          { id: 1, name: "saige", online: true, messages: [{ sender: "saige", text: "evil s3curiy! you will not prevail!" }] },
+          { id: 2, name: "proxy-node", online: true, messages: [{ sender: "proxy-node", text: "repository synchronized successfully." }] }
+        ];
+        let activeFriendId = 1;
+
+        // Initialize App on Load
+        window.onload = function() {
+          renderTabs();
+          loadRandomQuote();
+          renderCustomLinks();
+          renderPlaylist();
+          renderFriends();
+          navigateTo("blur://newtab");
+        };
+
+        // Quote selector
+        function loadRandomQuote() {
+          const q = quotes[Math.floor(Math.random() * quotes.length)];
+          const elem = document.getElementById("quote-display");
+          if (elem) elem.innerText = `"${q}"`;
+        }
+
+        // Tab Management
+        function renderTabs() {
+          const list = document.getElementById("tabs-list");
+          list.innerHTML = "";
+          tabs.forEach(tab => {
+            const isActive = tab.id === activeTabId;
+            const tabDiv = document.createElement("div");
+            tabDiv.className = `flex items-center gap-2 px-3 py-1.5 rounded-t-xl cursor-pointer transition-all border-t border-x max-w-[180px] min-w-[120px] justify-between group ${
+              isActive ? 'bg-[#050806] border-emerald-500/40 text-emerald-200 shadow-sm' : 'bg-[#030704]/60 border-emerald-900/20 text-emerald-400/60 hover:bg-emerald-950/40'
+            }`;
+            tabDiv.onclick = () => switchTab(tab.id);
+
+            let iconSvg = '<svg class="w-3.5 h-3.5 shrink-0 text-emerald-400" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M12 21a9.004 9.004 0 008.716-6.747M12 21a9.004 9.004 0 01-8.716-6.747M12 21c2.485 0 4.5-4.03 4.5-9S14.485 3 12 3m0 18c-2.485 0-4.5-4.03-4.5-9S9.515 3 12 3m0 0a8.997 8.997 0 017.843 4.582M12 3a8.997 8.997 0 00-7.843 4.582m15.686 0A11.953 11.953 0 0112 10.5c-2.998 0-5.74-1.1-7.843-2.918m15.686 0A8.959 8.959 0 0121 12c0 .778-.099 1.533-.284 2.25m0 0A11.959 11.959 0 0112 16.5c-3.162 0-6.033-1.2-8.156-3.15M20.716 14.25A8.96 8.96 0 0112 16.5a8.96 8.96 0 01-8.716-2.25"></path></svg>';
+            if (tab.url.startsWith("blur://")) {
+              iconSvg = '<span class="text-emerald-400 text-xs font-mono font-bold">b</span>';
+            }
+
+            tabDiv.innerHTML = `
+              <div class="flex items-center gap-2 truncate">
+                ${iconSvg}
+                <span class="text-xs truncate font-medium">${tab.title}</span>
+              </div>
+              <button onclick="event.stopPropagation(); closeTab(${tab.id})" class="p-0.5 rounded hover:bg-emerald-900/60 text-emerald-400/50 hover:text-emerald-200 transition-colors">
+                <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12"></path></svg>
+              </button>
+            `;
+            list.appendChild(tabDiv);
+          });
+        }
+
+        function addNewTrustTab(url = "blur://newtab", title = "new tab") {
+          const newId = tabs.length > 0 ? Math.max(...tabs.map(t => t.id)) + 1 : 1;
+          tabs.push({ id: newId, title: title, url: url });
+          historyStack[newId] = [url];
+          historyIndex[newId] = 0;
+          switchTab(newId);
+        }
+
+        function addNewTab() {
+          addNewTrustTab("blur://newtab", "new tab");
+        }
+
+        function closeTab(id) {
+          if (tabs.length === 1) return; // Keep at least one tab
+          const index = tabs.findIndex(t => t.id === id);
+          tabs = tabs.filter(t => t.id !== id);
+          if (activeTabId === id) {
+            activeTabId = tabs[Math.max(0, index - 1)].id;
+          }
+          renderTabs();
+          loadCurrentTabUrl();
+        }
+
+        function switchTab(id) {
+          activeTabId = id;
+          renderTabs();
+          loadCurrentTabUrl();
+        }
+
+        function getCurrentTab() {
+          return tabs.find(t => t.id === activeTabId) || tabs[0];
+        }
+
+        // Navigation
+        function navigateTo(url) {
+          const tab = getCurrentTab();
+          tab.url = url;
+          if (url.startsWith("blur://")) {
+            tab.title = url.replace("blur://", "");
+          } else {
+            try {
+              const u = new URL(url);
+              tab.title = u.hostname.replace("www.", "");
+            } catch(e) {
+              tab.title = url;
+            }
+          }
+
+          // Push to history
+          if (!historyStack[tab.id]) historyStack[tab.id] = [url];
+          else {
+            historyStack[tab.id] = historyStack[tab.id].slice(0, historyIndex[tab.id] + 1);
+            historyStack[tab.id].push(url);
+            historyIndex[tab.id] = historyStack[tab.id].length - 1;
+          }
+
+          renderTabs();
+          loadCurrentTabUrl();
+        }
+
+        function loadCurrentTabUrl() {
+          const tab = getCurrentTab();
+          document.getElementById("url-input").value = tab.url;
+
+          // Hide all views
+          document.querySelectorAll('.app-view').forEach(v => v.classList.add('hidden'));
+          document.querySelectorAll('.sidebar-btn').forEach(b => b.classList.remove('bg-emerald-950/80', 'text-emerald-300'));
+
+          const targetId = `view-${tab.url}`;
+          const viewElem = document.getElementById(targetId);
+
+          if (viewElem) {
+            viewElem.classList.remove('hidden');
+          } else {
+            // External Proxy View
+            const extView = document.getElementById("view-external");
+            extView.classList.remove('hidden');
+            document.getElementById("external-url-label").innerText = tab.url;
+            // Load via proxy or direct embedding if allowed
+            document.getElementById("external-iframe").src = tab.url;
+          }
+
+          // Highlight sidebar button if internal scheme
+          const sidebarBtn = document.getElementById(`sidebar-${tab.url}`);
+          if (sidebarBtn) {
+            sidebarBtn.classList.add('bg-emerald-950/80', 'text-emerald-300');
+          }
+        }
+
+        function navigateFromBar() {
+          let val = document.getElementById("url-input").value.trim();
+          if (!val) return;
+          if (!val.startsWith("blur://") && !val.startsWith("http://") && !val.startsWith("https://")) {
+            if (val.includes(".") && !val.includes(" ")) {
+              val = "https://" + val;
+            } else {
+              val = "https://www.google.com/search?q=" + encodeURIComponent(val);
+            }
+          }
+          navigateTo(val);
+        }
+
+        function handleUrlKeydown(e) {
+          if (e.key === "Enter") navigateFromBar();
+        }
+
+        function handleHubSearch(e) {
+          if (e.key === "Enter") {
+            const val = e.target.value.trim();
+            if (val) navigateTo(val.startsWith("blur://") ? val : "https://www.google.com/search?q=" + encodeURIComponent(val));
+          }
+        }
+
+        function goBack() {
+          const tab = getCurrentTab();
+          if (historyIndex[tab.id] > 0) {
+            historyIndex[tab.id]--;
+            tab.url = historyStack[tab.id][historyIndex[tab.id]];
+            renderTabs();
+            loadCurrentTabUrl();
+          }
+        }
+
+        function goForward() {
+          const tab = getCurrentTab();
+          if (historyIndex[tab.id] < historyStack[tab.id].length - 1) {
+            historyIndex[tab.id]++;
+            tab.url = historyStack[tab.id][historyIndex[tab.id]];
+            renderTabs();
+            loadCurrentTabUrl();
+          }
+        }
+
+        function reloadPage() {
+          loadCurrentTabUrl();
+        }
+
+        // Custom Links Modal
+        function openCustomLinkModal() {
+          document.getElementById("custom-link-modal").classList.remove("hidden");
+          document.getElementById("custom-link-modal").classList.add("flex");
+        }
+        function closeCustomLinkModal() {
+          document.getElementById("custom-link-modal").classList.remove("flex");
+          document.getElementById("custom-link-modal").classList.add("hidden");
+        }
+        function saveCustomLink() {
+          const name = document.getElementById("modal-app-name").value.trim();
+          const url = document.getElementById("modal-app-url").value.trim();
+          if (name && url) {
+            customLinks.push({ name, url });
+            localStorage.setItem('blur_custom_links', JSON.stringify(customLinks));
+            renderCustomLinks();
+            closeCustomLinkModal();
+          }
+        }
+        function renderCustomLinks() {
+          const container = document.getElementById("custom-links-container");
+          container.innerHTML = "";
+          customLinks.forEach((link, idx) => {
+            const div = document.createElement("div");
+            div.className = "glass hover:bg-emerald-950/40 px-4 py-2.5 rounded-xl flex items-center gap-3 cursor-pointer border border-emerald-900/40 text-xs font-medium text-emerald-300";
+            div.onclick = () => navigateTo(link.url);
+            div.innerHTML = `<span>⚡</span><span>${link.name}</span>`;
+            container.appendChild(div);
+          });
+        }
+
+        // Games Implementation
+        function loadGame(type) {
+          const container = document.getElementById("game-container");
+          if (type === 'snake') {
+            container.innerHTML = `
+              <div class="flex flex-col items-center gap-3">
+                <div class="text-xs font-bold text-emerald-300 font-mono">snake arcade (use arrow keys / swipe)</div>
+                <canvas id="snake-canvas" width="400" height="300" class="bg-[#020503] border border-emerald-500/30 rounded-xl shadow-lg"></canvas>
+                <div class="text-[10px] text-emerald-500">score: <span id="snake-score">0</span></div>
+              </div>
+            `;
+            initSnakeGame();
+          } else if (type === 'pong') {
+            container.innerHTML = `
+              <div class="flex flex-col items-center gap-3">
+                <div class="text-xs font-bold text-emerald-300 font-mono">pong classic (move mouse up/down)</div>
+                <canvas id="pong-canvas" width="500" height="300" class="bg-[#020503] border border-emerald-500/30 rounded-xl shadow-lg"></canvas>
+              </div>
+            `;
+            initPongGame();
+          } else if (type === 'clicker') {
+            container.innerHTML = `
+              <div class="flex flex-col items-center justify-center gap-4 py-12">
+                <div class="text-4xl font-black text-emerald-200" id="clicker-score">0</div>
+                <div class="text-xs text-emerald-400 font-mono">blur energy generated</div>
+                <button onclick="incrementClicker()" class="px-8 py-4 bg-emerald-600 hover:bg-emerald-500 text-black font-bold rounded-2xl shadow-xl transition-all transform active:scale-95 text-sm">click to generate</button>
+              </div>
+            `;
+          }
+        }
+
+        let clickerCount = 0;
+        function incrementClicker() {
+          clickerCount++;
+          const elem = document.getElementById("clicker-score");
+          if (elem) elem.innerText = clickerCount;
+        }
+
+        function initSnakeGame() {
+          const canvas = document.getElementById("snake-canvas");
+          if (!canvas) return;
+          const ctx = canvas.getContext("2d");
+          let snake = [{x: 10, y: 10}];
+          let food = {x: 15, y: 15};
+          let dx = 1, dy = 0;
+          let score = 0;
+
+          const interval = setInterval(() => {
+            const head = {x: snake[0].x + dx, y: snake[0].y + dy};
+            if (head.x < 0 || head.x >= 40 || head.y < 0 || head.y >= 30) {
+              clearInterval(interval);
+              return;
+            }
+            snake.unshift(head);
+            if (head.x === food.x && head.y === food.y) {
+              score += 10;
+              document.getElementById("snake-score").innerText = score;
+              food = {x: Math.floor(Math.random() * 38), y: Math.floor(Math.random() * 28)};
+            } else {
+              snake.pop();
+            }
+
+            ctx.fillStyle = "#020503";
+            ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+            ctx.fillStyle = "#22c55e";
+            snake.forEach(part => ctx.fillRect(part.x * 10, part.y * 10, 9, 9));
+
+            ctx.fillStyle = "#10b981";
+            ctx.fillRect(food.x * 10, food.y * 10, 9, 9);
+          }, 100);
+
+          window.onkeydown = (e) => {
+            if (e.key === "ArrowUp" && dy === 0) { dx = 0; dy = -1; }
+            if (e.key === "ArrowDown" && dy === 0) { dx = 0; dy = 1; }
+            if (e.key === "ArrowLeft" && dx === 0) { dx = -1; dy = 0; }
+            if (e.key === "ArrowRight" && dx === 0) { dx = 1; dy = 0; }
+          };
+        }
+
+        function initPongGame() {
+          const canvas = document.getElementById("pong-canvas");
+          if (!canvas) return;
+          const ctx = canvas.getContext("2d");
+          let ball = {x: 250, y: 150, dx: 3, dy: 2, radius: 8};
+          let paddleY = 120;
+
+          canvas.onmousemove = (e) => {
+            const rect = canvas.getBoundingClientRect();
+            paddleY = e.clientY - rect.top - 30;
+          };
+
+          const interval = setInterval(() => {
+            ball.x += ball.dx;
+            ball.y += ball.dy;
+
+            if (ball.y < 0 || ball.y > canvas.height) ball.dy *= -1;
+            if (ball.x > canvas.width) ball.dx *= -1;
+            if (ball.x < 20 && ball.y >= paddleY && ball.y <= paddleY + 60) ball.dx *= -1;
+
+            ctx.fillStyle = "#020503";
+            ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+            ctx.fillStyle = "#22c55e";
+            ctx.fillRect(10, paddleY, 10, 60);
+
+            ctx.beginPath();
+            ctx.arc(ball.x, ball.y, ball.radius, 0, Math.PI * 2);
+            ctx.fillStyle = "#10b981";
+            ctx.fill();
+            ctx.closePath();
+          }, 30);
+        }
+
+        // AI Assistant App Logic
+        let aiAttachment = null;
+        function handleAiPhotoUpload(e) {
+          const file = e.target.files[0];
+          if (file) {
+            const reader = new FileReader();
+            reader.onload = (evt) => {
+              aiAttachment = evt.target.result;
+              document.getElementById("ai-thumb").src = aiAttachment;
+              document.getElementById("ai-filename").innerText = file.name;
+              document.getElementById("ai-attachment-preview").classList.remove("hidden");
+              document.getElementById("ai-attachment-preview").classList.add("flex");
+            };
+            reader.readAsDataURL(file);
+          }
+        }
+        function removeAiAttachment() {
+          aiAttachment = null;
+          document.getElementById("ai-attachment-preview").classList.remove("flex");
+          document.getElementById("ai-attachment-preview").classList.add("hidden");
+        }
+        function sendAiMessage() {
+          const input = document.getElementById("ai-input");
+          const text = input.value.trim();
+          if (!text && !aiAttachment) return;
+
+          const msgContainer = document.getElementById("ai-chat-messages");
+          
+          // User Bubble
+          let userHtml = `<div class="flex gap-3 max-w-[80%] ml-auto flex-row-reverse">
+            <div class="w-8 h-8 rounded-full bg-emerald-600 flex items-center justify-center text-black text-xs shrink-0 font-bold">U</div>
+            <div class="px-4 py-3 rounded-2xl bg-emerald-900/60 border border-emerald-500/30 text-emerald-100 text-sm flex flex-col gap-2">`;
+          if (aiAttachment) {
+            userHtml += `<img src="${aiAttachment}" class="w-32 h-32 rounded-lg object-cover border border-emerald-400/40"/>`;
+          }
+          userHtml += `<span>${text}</span></div></div>`;
+          msgContainer.innerHTML += userHtml;
+          input.value = "";
+          removeAiAttachment();
+          msgContainer.scrollTop = msgContainer.scrollHeight;
+
+          // AI Simulated Response
+          setTimeout(() => {
+            let reply = "i have processed your query through the nest-proxy node. everything looks optimal!";
+            if (text.toLowerCase().includes("code")) reply = "blur-learning repository is fully updated with high-performance standards.";
+            msgContainer.innerHTML += `
+              <div class="flex gap-3 max-w-[80%]">
+                <div class="w-8 h-8 rounded-full bg-emerald-900/60 flex items-center justify-center text-emerald-300 text-xs shrink-0 font-bold">AI</div>
+                <div class="px-4 py-3 rounded-2xl glass border border-emerald-900/40 text-emerald-200 text-sm">${reply}</div>
+              </div>
+            `;
+            msgContainer.scrollTop = msgContainer.scrollHeight;
+          }, 800);
+        }
+        function handleAiKeydown(e) { if (e.key === "Enter") sendAiMessage(); }
+        function clearAiChat() {
+          document.getElementById("ai-chat-messages").innerHTML = `
+            <div class="flex gap-3 max-w-[80%]">
+              <div class="w-8 h-8 rounded-full bg-emerald-900/60 flex items-center justify-center text-emerald-300 text-xs shrink-0 font-bold">AI</div>
+              <div class="px-4 py-3 rounded-2xl glass border border-emerald-900/40 text-emerald-200 text-sm">chat cleared. how can I help you?</div>
+            </div>
+          `;
+        }
+
+        // Music Player App Logic
+        function handleMusicUpload(e) {
+          const files = e.target.files;
+          for (let file of files) {
+            playlist.push({
+              title: file.name.replace(/\.[^/.]+$/, ""),
+              artist: "local upload",
+              src: URL.createObjectURL(file)
+            });
+          }
+          renderPlaylist();
+          if (!audioElem.src && playlist.length > 0) loadTrack(0);
+        }
+        function renderPlaylist() {
+          const container = document.getElementById("playlist-container");
+          container.innerHTML = "";
+          playlist.forEach((track, idx) => {
+            const div = document.createElement("div");
+            div.className = `p-3 rounded-xl flex items-center justify-between cursor-pointer transition-all border ${
+              idx === currentTrackIndex ? 'bg-emerald-950/60 border-emerald-500/50 text-emerald-200' : 'bg-[#030704]/40 border-emerald-900/30 text-emerald-400/70 hover:bg-emerald-950/30'
+            }`;
+            div.onclick = () => loadTrack(idx);
+            div.innerHTML = `
+              <div class="flex flex-col truncate">
+                <span class="text-xs font-bold truncate">${track.title}</span>
+                <span class="text-[10px] text-emerald-500/70 font-mono">${track.artist}</span>
+              </div>
+              <span class="text-xs font-mono text-emerald-400">#0${idx+1}</span>
+            `;
+            container.appendChild(div);
+          });
+        }
+        function loadTrack(index) {
+          currentTrackIndex = index;
+          const track = playlist[index];
+          document.getElementById("current-track-title").innerText = track.title;
+          document.getElementById("current-track-artist").innerText = track.artist;
+          if (track.src) {
+            audioElem.src = track.src;
+            audioElem.play();
+            isPlaying = true;
+            document.getElementById("play-pause-btn").innerHTML = '<svg class="w-6 h-6" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M15.75 5.25v13.5m-7.5-13.5v13.5"></path></svg>';
+          }
+          renderPlaylist();
+        }
+        function togglePlayPause() {
+          if (!audioElem.src && playlist.length > 0) {
+            loadTrack(0);
+            return;
+          }
+          if (isPlaying) {
+            audioElem.pause();
+            isPlaying = false;
+            document.getElementById("play-pause-btn").innerHTML = '<svg class="w-6 h-6" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M5.25 5.653c0-.856.917-1.398 1.667-.986l11.54 6.347a1.125 1.125 0 010 1.972l-11.54 6.347a1.125 1.125 0 01-1.667-.986V5.653z"></path></svg>';
+          } else {
+            audioElem.play();
+            isPlaying = true;
+            document.getElementById("play-pause-btn").innerHTML = '<svg class="w-6 h-6" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M15.75 5.25v13.5m-7.5-13.5v13.5"></path></svg>';
+          }
+        }
+        function nextTrack() {
+          currentTrackIndex = (currentTrackIndex + 1) % playlist.length;
+          loadTrack(currentTrackIndex);
+        }
+        function prevTrack() {
+          currentTrackIndex = (currentTrackIndex - 1 + playlist.length) % playlist.length;
+          loadTrack(currentTrackIndex);
+        }
+        audioElem.ontimeupdate = () => {
+          if (audioElem.duration) {
+            const progress = (audioElem.currentTime / audioElem.duration) * 100;
+            document.getElementById("track-progress").value = progress;
+            const mins = Math.floor(audioElem.currentTime / 60);
+            const secs = Math.floor(audioElem.currentTime % 60);
+            document.getElementById("current-time").innerText = `${mins}:${secs < 10 ? '0' : ''}${secs}`;
+            const totMins = Math.floor(audioElem.duration / 60);
+            const totSecs = Math.floor(audioElem.duration % 60);
+            document.getElementById("total-duration").innerText = `${totMins}:${totSecs < 10 ? '0' : ''}${totSecs}`;
+          }
+        };
+        function seekAudio(e) {
+          if (audioElem.duration) {
+            audioElem.currentTime = (e.target.value / 100) * audioElem.duration;
+          }
+        }
+
+        // Chat App Logic
+        function renderFriends() {
+          const list = document.getElementById("friends-list");
+          list.innerHTML = "";
+          friends.forEach(f => {
+            const div = document.createElement("div");
+            div.className = `p-3 rounded-xl flex items-center justify-between cursor-pointer transition-all border ${
+              f.id === activeFriendId ? 'bg-emerald-950/60 border-emerald-500/50 text-emerald-200' : 'bg-[#030704]/40 border-emerald-900/30 text-emerald-400/70 hover:bg-emerald-950/30'
+            }`;
+            div.onclick = () => selectFriend(f.id);
+            div.innerHTML = `
+              <span class="text-xs font-bold">${f.name}</span>
+              <span class="w-2 h-2 rounded-full ${f.online ? 'bg-emerald-400' : 'bg-gray-600'}"></span>
+            `;
+            list.appendChild(div);
+          });
+        }
+        function selectFriend(id) {
+          activeFriendId = id;
+          const f = friends.find(item => item.id === id);
+          document.getElementById("active-chat-name").innerText = f.name;
+          renderMessages();
+          renderFriends();
+        }
+        function renderMessages() {
+          const container = document.getElementById("friend-messages");
+          const f = friends.find(item => item.id === activeFriendId);
+          container.innerHTML = "";
+          f.messages.forEach(m => {
+            const isMe = m.sender === "me";
+            container.innerHTML += `
+              <div class="flex gap-3 max-w-[80%] ${isMe ? 'ml-auto flex-row-reverse' : ''}">
+                <div class="w-8 h-8 rounded-full ${isMe ? 'bg-emerald-600 text-black' : 'bg-emerald-900/60 text-emerald-300'} flex items-center justify-center text-xs shrink-0 font-bold">${isMe ? 'U' : f.name[0]}</div>
+                <div class="px-4 py-3 rounded-2xl ${isMe ? 'bg-emerald-900/60 border border-emerald-500/30 text-emerald-100' : 'glass border border-emerald-900/40 text-emerald-200'} text-sm">${m.text}</div>
+              </div>
+            `;
+          });
+          container.scrollTop = container.scrollHeight;
+        }
+        function sendChatMessage() {
+          const input = document.getElementById("chat-input");
+          const text = input.value.trim();
+          if (!text) return;
+          const f = friends.find(item => item.id === activeFriendId);
+          f.messages.push({ sender: "me", text });
+          input.value = "";
+          renderMessages();
+
+          setTimeout(() => {
+            f.messages.push({ sender: f.name, text: "received your message through the blur proxy network." });
+            renderMessages();
+          }, 1000);
+        }
+        function handleChatKeydown(e) { if (e.key === "Enter") sendChatMessage(); }
+
+        // Settings Theme Switcher
+        function setTheme(theme) {
+          // Visual feedback on selected theme
+          console.log("theme set to:", theme);
+        }
+      </script>
+    </div>
+  </foreignObject>
+</svg>
